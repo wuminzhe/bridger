@@ -1,0 +1,8 @@
+[workspace]
+
+members = [
+    "main",
+    "bus",
+    "libs/*",
+    "services/*"
+]

@@ -1,0 +1,19 @@
+[package]
+name = "main"
+version = "0.1.0"
+edition = "2018"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+log = "0.4.14"
+simple_logger = "1.11.0"
+anyhow = "1.0"
+tokio = { version = "1.7.0", features = ["full"] }
+lifeline = { version = "0.6" }
+postage = "0.4.1"
+bus = { path = "../bus" }
+darwinia-relayer-service = { path = "../services/darwinia-relayer-service" }
+darwinia-events-service = { path = "../services/darwinia-events-service" }
+darwinia-affirm-service = { path = "../services/darwinia-affirm-service" }
+console-service = { path = "../services/console-service" }
