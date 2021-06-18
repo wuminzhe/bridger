@@ -1,8 +1,6 @@
 mod messages;
 
-pub use messages::{
-	BridgerMessage, DarwiniaAffirmMessage
-};
+pub use messages::{BridgerMessage, DarwiniaAffirmMessage};
 
 use lifeline::prelude::*;
 

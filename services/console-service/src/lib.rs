@@ -1,18 +1,15 @@
 #[macro_use]
 extern crate log;
 
-use bus::{
-    BridgerBus, DarwiniaAffirmMessage
-};
+use bus::{BridgerBus, DarwiniaAffirmMessage};
 use lifeline::prelude::*;
 use postage::{sink::Sink, stream::Stream};
 
-
-use tide::{Request, Body};
-use tide::prelude::*;
-use std::rc::Rc;
-use std::sync::{Mutex, Arc};
 use postage::broadcast::Sender;
+use std::rc::Rc;
+use std::sync::{Arc, Mutex};
+use tide::prelude::*;
+use tide::{Body, Request};
 
 /// The shared application state.
 #[derive(Clone)]
@@ -41,26 +38,24 @@ impl Service for ConsoleService {
     type Lifeline = anyhow::Result<Self>;
 
     fn spawn(bus: &Self::Bus) -> Self::Lifeline {
-
         let tx = bus.tx::<DarwiniaAffirmMessage>()?;
-        let state = State {
-            tx
-        };
+        let state = State { tx };
 
         let line = Self::try_task("console-service-web", async move {
-
             info!("Starting server...");
             let mut app = tide::with_state(state);
-            app.at("/affirm").post(|mut req: Request<State>| async move {
-                let a: Affirmation = req.body_json().await?;
+            app.at("/affirm")
+                .post(|mut req: Request<State>| async move {
+                    let a: Affirmation = req.body_json().await?;
 
-                let mut tx2 = &mut req.state().tx.clone();
-                tx2.send(DarwiniaAffirmMessage::ToAffirm(a.block_number)).await?;
+                    let mut tx2 = &mut req.state().tx.clone();
+                    tx2.send(DarwiniaAffirmMessage::ToAffirm(a.block_number))
+                        .await?;
 
-                Ok(json!({
-                    "meta": { "xxx": 2 },
-                }))
-            });
+                    Ok(json!({
+                        "meta": { "xxx": 2 },
+                    }))
+                });
             app.listen("0.0.0.0:3000").await?;
 
             Ok(())
@@ -69,4 +64,3 @@ impl Service for ConsoleService {
         Ok(Self { line })
     }
 }
-

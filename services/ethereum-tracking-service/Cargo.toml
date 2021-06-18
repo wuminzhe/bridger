@@ -16,3 +16,6 @@ bus = { path = "../../bus" }
 ethlike-tracker = { path = "../../libs/ethlike-tracker" }
 web3 = { version = "0.16.0", git = "https://github.com/wuminzhe/rust-web3.git", branch = "master", features = ["signing"] }
 array-bytes = "1.1.0"
+confy = { features = ["yaml_conf"], default-features = false, git = "https://github.com/rust-cli/confy.git", branch = "master" }
+serde = "^1.0"
+serde_yaml = { version = "0.8" }

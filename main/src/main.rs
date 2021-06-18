@@ -1,8 +1,4 @@
-
-use bus::{
-	BridgerBus, 
-	BridgerMessage, DarwiniaAffirmMessage
-};
+use bus::{BridgerBus, BridgerMessage, DarwiniaAffirmMessage};
 
 use lifeline::prelude::*;
 use postage::{sink::Sink, stream::Stream};
@@ -10,10 +6,10 @@ use simple_logger::SimpleLogger;
 
 use tokio::time::{sleep, Duration};
 
-use darwinia_relayer_service::DarwiniaRelayerService;
-use darwinia_events_service::DarwiniaEventsService;
-use darwinia_affirm_service::DarwiniaAffirmService;
 use console_service::ConsoleService;
+use darwinia_affirm_service::DarwiniaAffirmService;
+use darwinia_events_service::DarwiniaEventsService;
+use darwinia_relayer_service::DarwiniaRelayerService;
 use ethereum_tracking_service::EthereumTrackerService;
 
 /// Spawn a simple bus, and a services
@@ -21,7 +17,10 @@ use ethereum_tracking_service::EthereumTrackerService;
 /// If `services` is dropped, all it's tasks are cancelled.
 #[tokio::main]
 pub async fn main() -> anyhow::Result<()> {
-    SimpleLogger::new().with_level(log::LevelFilter::Info).init().expect("log init failed");
+    SimpleLogger::new()
+        .with_level(log::LevelFilter::Info)
+        .init()
+        .expect("log init failed");
 
     let bus = BridgerBus::default();
 
@@ -39,7 +38,8 @@ pub async fn main() -> anyhow::Result<()> {
 
     drop(bus);
 
-    tx.send(BridgerMessage::Darwinia("fuck".to_string())).await?;
+    tx.send(BridgerMessage::Darwinia("fuck".to_string()))
+        .await?;
     tx2.send(DarwiniaAffirmMessage::LastAffirmed(100)).await?;
     tx2.send(DarwiniaAffirmMessage::ToAffirm(150)).await?;
     tx2.send(DarwiniaAffirmMessage::DoAffirm).await?;
@@ -52,7 +52,7 @@ pub async fn main() -> anyhow::Result<()> {
     // assert_eq!(Some(ExampleSend::AwwOk), aww_ok);
     // println!("Service says {:?}", aww_ok.unwrap());
 
-	sleep(Duration::from_secs(100)).await;
+    sleep(Duration::from_secs(100)).await;
     println!("All done.");
 
     Ok(())

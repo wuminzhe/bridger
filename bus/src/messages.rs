@@ -1,11 +1,8 @@
-use lifeline::prelude::*;
 use crate::BridgerBus;
+use lifeline::prelude::*;
 use postage::broadcast;
 
-use substrate_subxt::{
-    sp_runtime::generic::Header,
-	sp_runtime::traits::BlakeTwo256,
-};
+use substrate_subxt::{sp_runtime::generic::Header, sp_runtime::traits::BlakeTwo256};
 
 /// BridgerMessage
 #[derive(Debug, Clone, Eq, PartialEq)]

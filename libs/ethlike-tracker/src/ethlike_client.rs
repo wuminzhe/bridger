@@ -1,9 +1,9 @@
+use crate::Result;
 use web3::{
     transports::http::Http,
-    types::{Log, BlockNumber, H160, U64, FilterBuilder, H256, SyncState},
+    types::{BlockNumber, FilterBuilder, Log, SyncState, H160, H256, U64},
     Web3,
 };
-use crate::Result;
 
 pub struct EthlikeClient {
     web3: Web3<Http>,
@@ -11,20 +11,25 @@ pub struct EthlikeClient {
 
 impl EthlikeClient {
     pub fn new(web3: Web3<Http>) -> EthlikeClient {
-        EthlikeClient {
-            web3,
-        }
+        EthlikeClient { web3 }
     }
 }
 
 impl EthlikeClient {
-    pub async fn get_logs(&self, contract_address: &H160, topics: &Vec<H256>, from: u64, to: u64) -> Result<Vec<Log>> {
+    pub async fn get_logs(
+        &self,
+        contract_address: &H160,
+        topics: &Vec<H256>,
+        from: u64,
+        to: u64,
+    ) -> Result<Vec<Log>> {
         // build filter
         let filter_builder = FilterBuilder::default()
             .address(vec![contract_address.clone()])
             .topics(Some(topics.clone()), None, None, None);
 
-        let filter = filter_builder.clone()
+        let filter = filter_builder
+            .clone()
             .from_block(BlockNumber::Number(U64::from(from)))
             .to_block(BlockNumber::Number(U64::from(to)))
             .build();

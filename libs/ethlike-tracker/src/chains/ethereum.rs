@@ -1,4 +1,4 @@
-use crate::{Result, EthlikeChain, EthlikeClient};
+use crate::{EthlikeChain, EthlikeClient, Result};
 use async_trait::async_trait;
 use std::time::Duration;
 use tokio::time::sleep;

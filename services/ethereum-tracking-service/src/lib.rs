@@ -1,20 +1,24 @@
+mod config;
+mod my_logs_handler;
 
 #[macro_use]
 extern crate log;
 
-use bus::{
-    BridgerBus, BridgerMessage
-};
+#[macro_use]
+extern crate async_trait;
+
+use bus::{BridgerBus, BridgerMessage, DarwiniaAffirmMessage};
+use ethlike_tracker::{Ethereum, EthlikeClient, EthlikeTracker};
 use lifeline::prelude::*;
 use postage::{sink::Sink, stream::Stream};
-use ethlike_tracker::{EthlikeTracker, EthlikeClient, Ethereum, DefaultLogsHandler};
 
 use web3::{
-    Web3,
     transports::Http,
-    types::{H160, H256, Log}
+    types::{Log, H160, H256},
+    Web3,
 };
 
+use crate::my_logs_handler::MyLogsHandler;
 use array_bytes::hex2bytes_unchecked as bytes;
 
 pub struct EthereumTrackerService {
@@ -26,27 +30,30 @@ impl Service for EthereumTrackerService {
     type Lifeline = anyhow::Result<Self>;
 
     fn spawn(bus: &Self::Bus) -> Self::Lifeline {
-
-        // let mut rx = bus.rx::<BridgerMessage>()?;
-        // let mut _tx = bus.tx::<BridgerMessage>()?;
+        let mut tx = bus.tx::<DarwiniaAffirmMessage>()?;
 
         let line = Self::try_task("ethereum-track-task", async move {
-            let web3 = Web3::new(Http::new("https://ropsten.infura.io/v3/60703fcc6b4e48079cfc5e385ee7af80").unwrap());
+            let cfg: config::Ethereum = confy::load("bridger", Some("ethereum-tracking-service"))?;
 
-            let contract_address = "0xD35Bb6F1bc1C84b53E0995c1830454AB7C4147f1";
-            let contract_address = H160::from_slice(&bytes(contract_address));
+            let web3 = Web3::new(
+                Http::new(cfg.rpc.as_str()).unwrap(),
+            );
 
-            let topics = &vec!["0x96635f5f1b0b05ed7e2265d4e13634378280f038e5a958227d4f383f825c2771"];
-            let topics = topics
-                .iter()
-                .map(|t| H256::from_slice(&bytes(t)))
-                .collect();
+            let mut topics_list = vec![];
+            for contract in cfg.contracts {
+                let contract_address = H160::from_slice(&bytes(contract.address.as_str()));
+                if let Some(topics) = contract.topics {
+                    let topics = topics.iter().map(|t| H256::from_slice(&bytes(t))).collect::<Vec<H256>>();
+                    topics_list.push((contract_address, topics));
+                }
+            }
+
 
             let client = EthlikeClient::new(web3);
-            let mut tracker = EthlikeTracker::<Ethereum, DefaultLogsHandler>::new(
+            let mut tracker = EthlikeTracker::<Ethereum, MyLogsHandler>::new(
                 client,
-                vec![(contract_address, topics)],
-                DefaultLogsHandler {},
+                topics_list,
+                MyLogsHandler::new(tx),
                 100,
             );
 

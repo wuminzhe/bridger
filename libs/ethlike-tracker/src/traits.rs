@@ -1,4 +1,4 @@
-use crate::{Result, EthlikeClient};
+use crate::{EthlikeClient, Result};
 use web3::types::{Log, H160, H256};
 
 #[async_trait]
@@ -10,5 +10,10 @@ pub trait EthlikeChain {
 
 #[async_trait]
 pub trait LogsHandler {
-    async fn handle(&self, client: &EthlikeClient, topics_list: &Vec<(H160, Vec<H256>)>, logs: Vec<Log>) -> Result<()>;
+    async fn handle(
+        &self,
+        client: &EthlikeClient,
+        topics_list: &Vec<(H160, Vec<H256>)>,
+        logs: Vec<Log>,
+    ) -> Result<()>;
 }
