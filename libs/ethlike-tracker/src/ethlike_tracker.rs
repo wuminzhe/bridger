@@ -1,4 +1,5 @@
-use tokio::time::{delay_for, Duration};
+use std::time::Duration;
+use tokio::time::sleep;
 use web3::{
     Web3,
     transports::Http,
@@ -36,7 +37,7 @@ impl<C: EthlikeChain, H: LogsHandler> EthlikeTracker<C, H> {
             match self.next().await {
                 Err(err) => {
                     error!("{:?}", err);
-                    delay_for(Duration::from_secs(30)).await;
+                    sleep(Duration::from_secs(30)).await;
                 },
                 Ok(logs) => {
                     if let Err(err2) = self.handle(logs).await {

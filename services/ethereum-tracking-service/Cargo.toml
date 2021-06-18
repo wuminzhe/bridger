@@ -6,3 +6,13 @@ edition = "2018"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
+log = "0.4.11"
+thiserror = "1.0.20"
+anyhow = "1.0"
+async-trait = "0.1.36"
+postage = "0.4.1"
+lifeline = { version = "0.6" }
+bus = { path = "../../bus" }
+ethlike-tracker = { path = "../../libs/ethlike-tracker" }
+web3 = { version = "0.16.0", git = "https://github.com/wuminzhe/rust-web3.git", branch = "master", features = ["signing"] }
+array-bytes = "1.1.0"

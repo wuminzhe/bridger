@@ -14,6 +14,7 @@ use darwinia_relayer_service::DarwiniaRelayerService;
 use darwinia_events_service::DarwiniaEventsService;
 use darwinia_affirm_service::DarwiniaAffirmService;
 use console_service::ConsoleService;
+use ethereum_tracking_service::EthereumTrackerService;
 
 /// Spawn a simple bus, and a services
 /// The services execution is tied to the 'lifeline' it returns
@@ -30,6 +31,7 @@ pub async fn main() -> anyhow::Result<()> {
     let _service4 = DarwiniaEventsService::spawn(&bus)?;
     let _service5 = DarwiniaAffirmService::spawn(&bus)?;
     let _service6 = ConsoleService::spawn(&bus)?;
+    let _service7 = EthereumTrackerService::spawn(&bus)?;
 
     let mut rx = bus.rx::<BridgerMessage>()?;
     let mut tx = bus.tx::<BridgerMessage>()?;

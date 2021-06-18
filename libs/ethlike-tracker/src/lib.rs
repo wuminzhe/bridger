@@ -19,3 +19,4 @@ pub use chains::{
 pub use default_logs_handler::DefaultLogsHandler;
 pub use traits::{EthlikeChain, LogsHandler};
 pub use ethlike_client::EthlikeClient;
+pub use ethlike_tracker::EthlikeTracker;

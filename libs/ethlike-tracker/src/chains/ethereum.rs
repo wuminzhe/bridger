@@ -1,6 +1,7 @@
 use crate::{Result, EthlikeChain, EthlikeClient};
 use async_trait::async_trait;
-use tokio::time::{delay_for, Duration};
+use std::time::Duration;
+use tokio::time::sleep;
 
 /// Ethereum
 pub struct Ethereum;
@@ -15,7 +16,7 @@ impl EthlikeChain for Ethereum {
             let result = (from, to);
             Ok(result)
         } else {
-            delay_for(Duration::from_secs(30)).await;
+            sleep(Duration::from_secs(30)).await;
             Ethereum::next_range(from, client).await
         }
     }

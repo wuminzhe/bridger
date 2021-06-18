@@ -17,3 +17,4 @@ darwinia-relayer-service = { path = "../services/darwinia-relayer-service" }
 darwinia-events-service = { path = "../services/darwinia-events-service" }
 darwinia-affirm-service = { path = "../services/darwinia-affirm-service" }
 console-service = { path = "../services/console-service" }
+ethereum-tracking-service = { path = "../services/ethereum-tracking-service" }
